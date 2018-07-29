@@ -2,7 +2,7 @@
 import requests
 url = "http://finance.sina.com.cn/realstock/company/sz000651/qianfuquan.js?d=2014-06-16"
 r = requests.get(url)
-text = r.text.split("/*")[0].split()[0]
+text = r.text.split("/*")[0].strip()
 import demjson
 data =demjson.decode(text)
 from pandas import Series
