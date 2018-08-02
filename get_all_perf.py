@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python2
 #coding=utf-8
 import requests
 import demjson
@@ -8,12 +8,12 @@ from pandas import DataFrame
 import tushare as ts
 import numpy
 
+perf = Series()
 
 ts.get_industry_classified()
 data_all = ts.get_industry_classified()
-data_home = data_all[data_all["c_name"]=="家电行业"]
-
-
+#data_home = data_all[data_all["c_name"]=="家电行业"]
+perf["total"] = data_all.count()['code']
 
 def get_rate(code):
     url = "http://finance.sina.com.cn/realstock/company/sz{0}/qianfuquan.js?d=2014-06-16".format(code)
@@ -29,16 +29,11 @@ def get_rate(code):
     obj =Series(data[0]['data'])
     obj1=pd.to_numeric(obj)
     obj1.index=pd.to_datetime(obj1.index,format="_%Y_%m_%d")
-    #data1=DataFrame(obj1)
-    #data1.columns=["Price",]
-    #print(data1)
-    #data1.Price[data1.index.min()]
-    #data1.Price[data1.index.max()]
-
-    #print(obj1)
     rate = obj1[obj1.index.max()]/obj1[obj1.index.min()]
-    print("code:{}".format(code))
-    print("rate:{}".format(rate))
-    print()
-for com in numpy.array(data_home.code):
-    get_rate(com)
+    print "code:{}".format(code)
+    print "rate:{}".format(rate)
+    return code, rate
+for com in numpy.array(data_all.code):
+    code, rate = get_rate(com)
+    perf[code]= rate
+    perf.to_csv('perf.csv')
