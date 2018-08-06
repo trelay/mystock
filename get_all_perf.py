@@ -10,6 +10,7 @@ import numpy
 
 data_all = ts.get_industry_classified()
 data_all.index=data_all.code
+del data_all['code']
 data_all['rate']="NAN"
 
 def get_rate(code):
@@ -32,7 +33,7 @@ def get_rate(code):
         rate = "NAN"
     print "{}:{}".format(code,rate)
     return rate
-for com in numpy.array(data_all.code):
+for com in numpy.array(data_all.index):
     rate = get_rate(com)
     data_all['rate'][com]=rate
     data_all.to_csv('result.log')
