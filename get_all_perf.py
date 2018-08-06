@@ -8,11 +8,9 @@ from pandas import DataFrame
 import tushare as ts
 import numpy
 
-perf = Series()
-
-ts.get_industry_classified()
 data_all = ts.get_industry_classified()
-#data_home = data_all[data_all["c_name"]=="家电行业"]
+data_all.index=data_all.code
+data_all['rate']="NAN"
 
 def get_rate(code):
     url = "http://finance.sina.com.cn/realstock/company/sz{0}/qianfuquan.js?d=2014-06-16".format(code)
@@ -22,7 +20,7 @@ def get_rate(code):
         r = requests.get(url)
     if r.status_code!=200:
        print("can not find this share")
-       return code,"NAA"
+       return "NAA"
     text = r.text.split("/*")[0].strip()
     data =demjson.decode(text)
     obj =Series(data[0]['data'])
@@ -33,9 +31,8 @@ def get_rate(code):
     except:
         rate = "NAN"
     print "{}:{}".format(code,rate)
-    return code, rate
+    return rate
 for com in numpy.array(data_all.code):
-    if not com in done.index:
-        code, rate = get_rate(com)
-        perf[code]= rate
-        perf.to_csv('perf_new.csv')
+    rate = get_rate(com)
+    data_all['rate'][com]=rate
+    data_all.to_csv('result.log')
