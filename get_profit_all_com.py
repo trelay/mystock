@@ -30,4 +30,5 @@ for ts_code in ts_code_list:
 
 
 print(all_data)
-all_data.to_excel('/home/trelay/all.xlsx')
+file_path = os.path.join(os.getcwd(),"profit.xlsx")
+all_data.to_excel(file_path)
